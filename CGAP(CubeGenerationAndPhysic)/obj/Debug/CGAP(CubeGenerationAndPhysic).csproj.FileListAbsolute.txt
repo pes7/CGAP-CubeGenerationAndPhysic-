@@ -1,0 +1,10 @@
+c:\users\user\documents\visual studio 2015\Projects\CGAP(CubeGenerationAndPhysic)\CGAP(CubeGenerationAndPhysic)\bin\Debug\CGAP(CubeGenerationAndPhysic).exe.config
+c:\users\user\documents\visual studio 2015\Projects\CGAP(CubeGenerationAndPhysic)\CGAP(CubeGenerationAndPhysic)\bin\Debug\CGAP(CubeGenerationAndPhysic).exe
+c:\users\user\documents\visual studio 2015\Projects\CGAP(CubeGenerationAndPhysic)\CGAP(CubeGenerationAndPhysic)\bin\Debug\CGAP(CubeGenerationAndPhysic).pdb
+c:\users\user\documents\visual studio 2015\Projects\CGAP(CubeGenerationAndPhysic)\CGAP(CubeGenerationAndPhysic)\obj\Debug\CGAP(CubeGenerationAndPhysic).csprojResolveAssemblyReference.cache
+c:\users\user\documents\visual studio 2015\Projects\CGAP(CubeGenerationAndPhysic)\CGAP(CubeGenerationAndPhysic)\obj\Debug\CGAP_CubeGenerationAndPhysic_.Form1.resources
+c:\users\user\documents\visual studio 2015\Projects\CGAP(CubeGenerationAndPhysic)\CGAP(CubeGenerationAndPhysic)\obj\Debug\CGAP_CubeGenerationAndPhysic_.Properties.Resources.resources
+c:\users\user\documents\visual studio 2015\Projects\CGAP(CubeGenerationAndPhysic)\CGAP(CubeGenerationAndPhysic)\obj\Debug\CGAP(CubeGenerationAndPhysic).csproj.GenerateResource.Cache
+c:\users\user\documents\visual studio 2015\Projects\CGAP(CubeGenerationAndPhysic)\CGAP(CubeGenerationAndPhysic)\obj\Debug\CGAP(CubeGenerationAndPhysic).exe
+c:\users\user\documents\visual studio 2015\Projects\CGAP(CubeGenerationAndPhysic)\CGAP(CubeGenerationAndPhysic)\obj\Debug\CGAP(CubeGenerationAndPhysic).pdb
+c:\users\user\documents\visual studio 2015\Projects\CGAP(CubeGenerationAndPhysic)\CGAP(CubeGenerationAndPhysic)\obj\Debug\CGAP_CubeGenerationAndPhysic_.Images.resources
