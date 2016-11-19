@@ -17,7 +17,9 @@ namespace CGAP_CubeGenerationAndPhysic_
         Borders Br;
         Player Pl;
 
-        enum GroundLevelOfBottom {Top,Middle,Bottom};
+        public enum GroundLevelOfBottom {Top,Middle,Bottom};
+        public enum GSide { Left, Right, Top, Bottom };
+        public enum BType { GrassTop, DritBottom, DirtBottom, Space };
         GroundLevelOfBottom NowGroundLevel = GroundLevelOfBottom.Top;
 
         Size WorldSizeSettings = new Size(64,64);// Where 64 - width and 32 - sky, 32 - ground
@@ -25,7 +27,7 @@ namespace CGAP_CubeGenerationAndPhysic_
 
         Size RealWindowSize;
 
-        GraphicsState Gs;
+        static Map GMap;
 
         public Form1()
         {
@@ -37,44 +39,79 @@ namespace CGAP_CubeGenerationAndPhysic_
 
             Player.BPoint bp = new Player.BPoint();
             bp.BX = 5;
-            bp.BY = 4;
+            bp.BY = 0;
             Pl = new Player("Nazar", bp);
+            ExperimentalGeneration();
+            Console.WriteLine("Generation Complited!");
             WorldShow();
         }
 
         public void WorldShow()
         {
             int NowX = Br.BottomLeft.X;
-            NowGroundLevel = GroundLevelOfBottom.Top;
-            for (int i =  -WorldShowSettings.Height / 2; i < WorldShowSettings.Height / 2; i++)
+            for (int i = 0; i < WorldShowSettings.Height; i++)
             {
                 NowX = -Block.Size.Width;
-                for (int j = 0 - WorldShowSettings.Width / 2; j < WorldShowSettings.Width / 2; j++)
+                for (int j = 0; j < WorldShowSettings.Width; j++)
                 {
-                    Generation(new Point(NowX += Block.Size.Width, Br.BottomLeft.Y - (Block.Size.Height * (WorldShowSettings.Height / 2 - i))));
+                    Gr.DrawImage(GMap.LLevel[i].LMBlock[j].Bitmap, new Point(NowX += Block.Size.Width, Br.BottomLeft.Y - (Block.Size.Height * (WorldShowSettings.Height - i))));
                 }
+            }
+            Gr.DrawImage(Images.Player, new Point((0 + Pl.BlockPoint.BX) * Block.Size.Width, (RealWindowSize.Height - WorldShowSettings.Height - Pl.BlockPoint.BY) * Block.Size.Height));
+        }
+
+        public void ExperimentalGeneration()
+        {
+            List<Level> lv = new List<Level>();
+            GMap = new Map(lv);
+            NowGroundLevel = GroundLevelOfBottom.Top;
+            for (int i = 0; i < WorldSizeSettings.Height; i++)
+            {
+                List<MBlock> mb = new List<MBlock>();
+                for (int j = 0;j < WorldSizeSettings.Width; j++)
+                {
+                    mb.Add(new MBlock(new Size(32, 32), j , (BType)NowGroundLevel, CreateBlock()));
+                    //Console.WriteLine($"BT: {(BType)NowGroundLevel} X: {j} Y: {i} GN!");
+                }
+                GMap.LLevel.Add(new Level(mb, i , mb.Count));
                 NowGroundLevel = GroundLevelOfBottom.Middle;
             }
-            Gr.DrawImage(Images.Player, new Point((0 + Pl.BlockPoint.BX) * Block.Size.Width,(RealWindowSize.Height - Pl.BlockPoint.BY) * Block.Size.Height));
+        }
+
+        
+        public bool CheckColusion(GSide Side)
+        {
+            switch (Side) {
+                case GSide.Left:
+                    if(GMap.LLevel[Pl.BlockPoint.BY].LMBlock[Pl.BlockPoint.BX - 1].Type == BType.DritBottom)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                default:
+                    return true;
+                }
         }
 
         public void Generation(Point StartPoint)
         {
-            CreateBlock(new Point(StartPoint.X , StartPoint.Y),new Size(Block.Size.Width, Block.Size.Height));
+           // CreateBlock(new Point(StartPoint.X , StartPoint.Y),new Size(Block.Size.Width, Block.Size.Height));
         }
 
-        public void CreateBlock(Point po1, Size sz1)
+        public Bitmap CreateBlock()
         {
             switch (NowGroundLevel) {
                 case GroundLevelOfBottom.Top:
-                    Gr.DrawImage(Images.GreenTopBlock, po1);
-                    break;
+                    return Images.GreenTopBlock;
                 case GroundLevelOfBottom.Middle:
-                    Gr.DrawImage(Images.GreenMiddleBlock, po1);
-                    break;
+                    return Images.GreenMiddleBlock;
                 case GroundLevelOfBottom.Bottom:
-
-                    break;
+                    return null;
+                default:
+                    return null;
             }
         }
 
@@ -107,27 +144,68 @@ namespace CGAP_CubeGenerationAndPhysic_
                 public int BY;
             }
         }
+        
+        class Map {
+            public List<Level> LLevel { get; set; }
+            public Map(List<Level> llevel)
+            {
+                LLevel = llevel;
+            }
+        } 
+
+        class Level {
+            public int Count { get; set; }
+            public int Y { get; set; }
+            public List<MBlock> LMBlock { get; set; }
+            public Level(List<MBlock> lmblock,int y,int count = 0)
+            {
+                Count = count;
+                Y = y;
+                LMBlock = lmblock;
+            }
+        }
+
+        class MBlock
+        {
+            public Size Size { get; set; }
+            public int X { get; set; }
+            public BType Type { get; set; }
+            public int IsVisable { get; set; }
+            public Bitmap Bitmap { get; set; }
+            public MBlock(Size size,int x, BType type,Bitmap im,int isvisable = 1)
+            {
+                X = x;
+                Size = size;
+                Type = type;
+                Bitmap = im;
+                IsVisable = isvisable;
+            }
+        }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             Player.BPoint bp = new Player.BPoint();
             bp.BX = Pl.BlockPoint.BX;
             bp.BY = Pl.BlockPoint.BY;
-            ClearPlayerLastPosition();
             switch (e.KeyValue)
             {
                 case 87:
 
                     break;
                 case 68:
+                    ClearPlayerLastPosition();
                     bp.BX++;
                     Pl.BlockPoint = bp;
                     WorldShow();
                     break;
                 case 65:
-                    bp.BX--;
-                    Pl.BlockPoint = bp;
-                    WorldShow();
+                    if (CheckColusion(GSide.Left))
+                    {
+                        ClearPlayerLastPosition();
+                        bp.BX--;
+                        Pl.BlockPoint = bp;
+                        WorldShow();
+                    }
                     break;
                 case 83:
 
@@ -137,7 +215,7 @@ namespace CGAP_CubeGenerationAndPhysic_
     
         public void ClearPlayerLastPosition()
         {
-            Gr.FillRectangle(Brushes.White, new Rectangle(new Point((0 + Pl.BlockPoint.BX) * Block.Size.Width, (RealWindowSize.Height - Pl.BlockPoint.BY) * Block.Size.Height),new Size(32,32)));
+            Gr.FillRectangle(Brushes.White, new Rectangle(new Point((0 + Pl.BlockPoint.BX) * Block.Size.Width, (RealWindowSize.Height - WorldShowSettings.Height - Pl.BlockPoint.BY) * Block.Size.Height),new Size(32,32)));
         }
 
         private void Form1_Load(object sender, EventArgs e)
